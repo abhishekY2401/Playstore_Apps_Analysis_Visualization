@@ -1,0 +1,101 @@
+# Query 1
+
+SELECT App
+FROM updated_playstore_apps
+WHERE Rating = (
+ SELECT MAX(Rating) FROM updated_playstore_apps
+);
+
+/*--2 What are the number #of installs #and reviews #for the above apps? Return the apps #with the highest reviews #to the top.
+Doubt: --snapchat facebook has multiple entries*/
+
+SELECT App,Reviews,Installs FROM Updated_Playstore_Apps
+ORDER BY Reviews DESC;
+
+# Query 3
+
+SELECT App, Category, Reviews
+FROM updated_playstore_apps
+ORDER BY Reviews DESC 
+LIMIT 1;
+
+# Query 4
+
+SELECT SUM(Price) as Total_Revenue 
+FROM updated_playstore_apps WHERE Type='Paid';
+
+
+/*5 Which Category #of google play store apps has the highest number #of installs? also, find out the total number #of installs #for that particular category.*/
+
+SELECT category,MAX(total_installs) as Max_installed
+from(
+SELECT category,sum(installs) AS total_installs
+FROM Updated_Playstore_Apps
+GROUP BY category )t;
+
+# Query 6
+
+-- display genre which has most published apps
+SELECT Genres, COUNT(Genres) as Count
+FROM updated_playstore_apps
+GROUP BY Genres
+ORDER BY COUNT(Genres) DESC
+LIMIT 1;
+
+# Query 7
+
+SELECT DISTINCT(App) 
+FROM updated_playstore_apps 
+WHERE Category='GAME' 
+ORDER BY Installs DESC;
+
+
+/*--8 Provide the list of apps that can work on android version 4.0.3 and UP.*/
+
+SELECT app
+FROM Updated_Playstore_Apps  
+WHERE android_ver  like '%4.0.3 and up%' ;
+
+# Query 9 
+
+SELECT Type, COUNT(Type) as Count
+FROM updated_playstore_apps
+GROUP BY Type;
+
+# Query 10
+
+SELECT App
+FROM updated_playstore_apps
+WHERE Category = "DATING"
+ORDER BY Reviews DESC
+LIMIT 1;
+
+
+/*--11 Get the number of reviews having positive sentiment and number of reviews having negative sentiment for the app 10 best foods for you and compare them.*/
+
+SELECT Sentiment, COUNT(*) As Count_10_Best_Foods_for_You
+FROM  Updated_Playstore_Reviews
+WHERE App LIKE '%10 Best Foods for You%' AND (Sentiment Like '%Positive%' OR Sentiment Like '%Negative%')
+GROUP BY Sentiment;
+
+# Query 12
+
+SELECT Translated_Review
+FROM updated_playstore_reviews
+WHERE (App = "ASUS SuperNote" and 
+Sentiment_Polarity=1 and 
+Sentiment_Subjectivity=1);
+
+
+/* 13 Get all the neutral sentiment reviews for the app Abs Training-Burn belly fat */
+
+SELECT Translated_Review AS Neutral_Reviews_Abs_Training_Burn_belly_fat
+FROM  Updated_Playstore_Reviews
+WHERE App LIKE '%Abs Training-Burn belly fat%' AND Sentiment Like '%Neutral%';
+
+
+/*14Extract all negative sentiment reviews for Adobe Acrobat Reader with their sentiment polarity and sentiment subjectivity*/
+
+SELECT Sentiment_Polarity , Sentiment_Subjectivity,Translated_Review 
+FROM  Updated_Playstore_Reviews
+WHERE App LIKE '%Adobe Acrobat Reader%' AND Sentiment Like '%Negative%';
